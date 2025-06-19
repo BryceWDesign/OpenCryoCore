@@ -1,46 +1,44 @@
 # File: /opencryocore/hardware/fan_emitter.py
 
-import time
-
 class FanEmitter:
     """
-    Controls high-efficiency pulse fan modules used to radiate cooled air in all directions.
-    Simulates vortex output for 360° radial dispersion and upward projection.
+    Models a fan-based air vortex emitter for CryoCore,
+    designed to push cooled air radially in a 360-degree pattern.
     """
 
-    def __init__(self, num_emitters: int = 8, max_power_watts: float = 40.0):
+    def __init__(self, max_rpm: int = 3000, airflow_cfm: float = 150.0):
         """
-        :param num_emitters: Number of fan units installed around the ring
-        :param max_power_watts: Maximum power dedicated to fan thrust
+        :param max_rpm: Maximum rotations per minute of the fan
+        :param airflow_cfm: Airflow in cubic feet per minute
         """
-        self.num_emitters = num_emitters
-        self.max_power_watts = max_power_watts
-        self.operating = False
+        self.max_rpm = max_rpm
+        self.airflow_cfm = airflow_cfm
+        self.current_rpm = 0
+        self.active = False
 
-    def activate(self, duration_sec: int = 10):
+    def activate(self, duration_sec: int):
         """
-        Simulate active fan output.
+        Activates the fan at max RPM for the specified duration.
         """
-        if self.operating:
-            print("[FanEmitter] Already running.")
-            return
-
-        self.operating = True
-        power_per_fan = self.max_power_watts / self.num_emitters
-        print(f"[FanEmitter] Emitting vortex cooling using {self.num_emitters} fans.")
-        for i in range(duration_sec):
-            print(f"  • Emission cycle {i+1}/{duration_sec} | Output: {power_per_fan:.2f} W/fan")
-            time.sleep(1)
-        self.operating = False
-        print("[FanEmitter] Emission complete.")
+        self.current_rpm = self.max_rpm
+        self.active = True
+        print(f"[FanEmitter] Activated at {self.current_rpm} RPM for {duration_sec} seconds.")
 
     def shutdown(self):
-        self.operating = False
-        print("[FanEmitter] All fans shut down.")
+        """
+        Shuts down the fan.
+        """
+        self.current_rpm = 0
+        self.active = False
+        print("[FanEmitter] Shutdown.")
 
     def get_status(self) -> dict:
+        """
+        Returns current status of the fan emitter.
+        """
         return {
-            "emitters": self.num_emitters,
-            "max_power_watts": self.max_power_watts,
-            "operating": self.operating
+            "active": self.active,
+            "current_rpm": self.current_rpm,
+            "max_rpm": self.max_rpm,
+            "airflow_cfm": self.airflow_cfm
         }

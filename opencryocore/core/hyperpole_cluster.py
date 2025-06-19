@@ -1,69 +1,87 @@
 # File: /opencryocore/core/hyperpole_cluster.py
 
 from typing import List
-from .cryocore_unit import CryoCoreUnit
-import time
+from opencryocore.hardware.structure_shell import StructureShell
+from opencryocore.hardware.fan_emitter import FanEmitter
+from opencryocore.hardware.piston_generator import PistonGenerator
+
+class HyperPoleUnit:
+    """
+    Represents a single HyperPole cooling unit.
+    Combines metallic shell, fan emitter, and piston generator for hybrid cooling and power harvesting.
+    """
+
+    def __init__(self, unit_id: str):
+        self.unit_id = unit_id
+        self.shell = StructureShell()
+        self.fan_emitter = FanEmitter()
+        self.piston_generator = PistonGenerator()
+        self.operational = False
+
+    def activate(self):
+        print(f"[HyperPoleUnit-{self.unit_id}] Activating.")
+        self.shell  # Structural setup, no active method needed
+        self.fan_emitter.activate(duration_sec=10)
+        self.piston_generator.activate()
+        self.operational = True
+
+    def shutdown(self):
+        print(f"[HyperPoleUnit-{self.unit_id}] Shutting down.")
+        self.fan_emitter.shutdown()
+        self.piston_generator.shutdown()
+        self.operational = False
+
+    def get_status(self):
+        return {
+            "unit_id": self.unit_id,
+            "operational": self.operational,
+            "fan_status": self.fan_emitter.get_status(),
+            "power_output": self.piston_generator.get_current_output()
+        }
+
 
 class HyperPoleCluster:
     """
-    Manages a 9-unit CryoCore cluster acting as a unified HyperPole cooling tower.
-    Each unit operates in sync to maximize radial cooling and vertical convection.
+    Manages a cluster of HyperPoleUnits.
+    Coordinates activation, power management, and cooling distribution.
     """
 
-    def __init__(self, cluster_id: str, power_budget_watts: float, ambient_temp_c: float = 45.0):
-        """
-        Initialize a HyperPoleCluster with 9 CryoCore units.
-        :param cluster_id: Unique cluster identifier
-        :param power_budget_watts: Total available power for all 9 cores
-        :param ambient_temp_c: External starting temperature
-        """
+    def __init__(self, cluster_id: str, power_budget_watts: float, unit_count: int = 9):
         self.cluster_id = cluster_id
         self.power_budget_watts = power_budget_watts
-        self.ambient_temp_c = ambient_temp_c
-        self.units: List[CryoCoreUnit] = []
+        self.units: List[HyperPoleUnit] = [HyperPoleUnit(f"{cluster_id}_unit_{i+1}") for i in range(unit_count)]
         self.operational = False
-
-        self._initialize_units()
-
-    def _initialize_units(self):
-        unit_power = self.power_budget_watts / 9.0
-        for i in range(9):
-            unit_id = f"{self.cluster_id}_core{i+1}"
-            unit = CryoCoreUnit(unit_id, unit_power, self.ambient_temp_c)
-            self.units.append(unit)
 
     def activate_cluster(self):
-        print(f"[{self.cluster_id}] Activating HyperPole cluster...")
+        print(f"[HyperPoleCluster-{self.cluster_id}] Activating cluster with {len(self.units)} units.")
         for unit in self.units:
-            unit.startup_sequence()
-        self.operational = all(unit.operational for unit in self.units)
-        if self.operational:
-            print(f"[{self.cluster_id}] Cluster fully operational.")
-        else:
-            print(f"[{self.cluster_id}] Cluster failed to activate all units.")
-
-    def run_cooling_cycle(self, duration_seconds: int = 60):
-        """
-        Activate simultaneous cooling cycle on all 9 CryoCore units.
-        """
-        if not self.operational:
-            print(f"[{self.cluster_id}] Cluster not operational. Cannot cool.")
-            return
-
-        print(f"[{self.cluster_id}] Running coordinated cooling cycle...")
-        for unit in self.units:
-            unit.cool_environment(seconds=duration_seconds)
+            unit.activate()
+        self.operational = True
 
     def shutdown_cluster(self):
-        print(f"[{self.cluster_id}] Shutting down cluster...")
+        print(f"[HyperPoleCluster-{self.cluster_id}] Shutting down cluster.")
         for unit in self.units:
-            unit.shutdown_sequence()
+            unit.shutdown()
         self.operational = False
 
-    def cluster_status(self) -> dict:
+    def run_cooling_cycle(self, duration_seconds: int):
+        """
+        Simulate cooling output cycle for all units.
+        """
+        if not self.operational:
+            print(f"[HyperPoleCluster-{self.cluster_id}] Cluster not operational.")
+            return
+
+        print(f"[HyperPoleCluster-{self.cluster_id}] Running cooling cycle for {duration_seconds} seconds.")
+        for unit in self.units:
+            # Simulate piston generator impacts randomly
+            unit.piston_generator.simulate_impact(force_level=0.8)
+            unit.fan_emitter.activate(duration_sec=duration_seconds)
+
+    def cluster_status(self):
         return {
             "cluster_id": self.cluster_id,
             "operational": self.operational,
-            "ambient_temp_c": self.ambient_temp_c,
-            "unit_statuses": [unit.status() for unit in self.units]
+            "unit_count": len(self.units),
+            "units_status": [unit.get_status() for unit in self.units]
         }

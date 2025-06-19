@@ -1,0 +1,29 @@
+<!-- File: /opencryocore/display/templates/dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>CryoCore Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #121212; color: #e0e0e0; }
+        h1 { text-align: center; margin-top: 20px; }
+        #status { margin: 20px auto; width: 90%; max-width: 900px; }
+        pre { background: #222; padding: 10px; border-radius: 8px; overflow-x: auto; }
+    </style>
+    <script>
+        async function fetchStatus() {
+            const response = await fetch('/status');
+            const data = await response.json();
+            document.getElementById('status').textContent = JSON.stringify(data, null, 2);
+        }
+        setInterval(fetchStatus, 10000);
+        window.onload = fetchStatus;
+    </script>
+</head>
+<body>
+    <h1>CryoCore System Dashboard</h1>
+    <div id="status">
+        Loading status...
+    </div>
+</body>
+</html>

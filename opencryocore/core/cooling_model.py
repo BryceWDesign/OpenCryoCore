@@ -1,44 +1,45 @@
 # File: /opencryocore/core/cooling_model.py
 
-import math
-
 class CoolingModel:
     """
-    Models the conversion of electrical power into ambient cooling.
-    Used to simulate temperature drop in a given air volume per watt applied.
+    Models the thermoelectric cooling effect using Peltier devices.
+    Calculates temperature drop in the target air volume based on input power and duration.
     """
 
-    def __init__(self, air_volume_m3: float, system_efficiency: float = 0.68):
+    def __init__(self, air_volume_m3: float):
         """
-        :param air_volume_m3: Volume of air being cooled (m³)
-        :param system_efficiency: 0.0 - 1.0 cooling efficiency factor
+        :param air_volume_m3: Volume of air to be cooled in cubic meters
         """
         self.air_volume_m3 = air_volume_m3
-        self.system_efficiency = system_efficiency
-        self.air_specific_heat_j_per_kg_c = 1005  # J/kg·°C (typical for dry air)
-        self.air_density_kg_per_m3 = 1.2  # at sea level
+        self.air_density_kg_per_m3 = 1.225  # average air density at sea level (kg/m³)
+        self.specific_heat_capacity_air = 1005  # J/(kg·K)
 
-    def compute_temp_drop(self, watts_input: float, seconds: int = 60) -> float:
+    def compute_temp_drop(self, power_watts: float, seconds: int) -> float:
         """
-        Estimate temperature drop based on wattage input and efficiency.
-        :param watts_input: Power applied (in watts)
-        :param seconds: Duration of application
-        :return: Estimated °C drop in air mass
-        """
-        total_joules = watts_input * seconds * self.system_efficiency
-        air_mass = self.air_volume_m3 * self.air_density_kg_per_m3
-        delta_temp_c = total_joules / (air_mass * self.air_specific_heat_j_per_kg_c)
-        return delta_temp_c
+        Calculates approximate temperature drop (°C) given power and duration.
+        Assumes all power goes into cooling.
 
-    def inverse_temp_gain(self, watts_loss: float, seconds: int = 60, sunlight_factor: float = 1.0) -> float:
+        Q = m * c * ΔT  => ΔT = Q / (m * c)
+        where Q = power_watts * seconds (Joules)
+        m = air_density * volume
+
+        :param power_watts: Cooling power input in watts
+        :param seconds: Duration cooling applied in seconds
+        :return: Temperature drop in °C
         """
-        Estimate ambient re-heating from solar or ambient convection.
-        :param watts_loss: Passive gain from external sources (e.g. solar)
-        :param seconds: Time simulated
-        :param sunlight_factor: 0.0 to 1.0 scale of sun exposure
-        :return: Estimated °C increase
+        energy_joules = power_watts * seconds
+        mass_air = self.air_density_kg_per_m3 * self.air_volume_m3
+        temp_drop = energy_joules / (mass_air * self.specific_heat_capacity_air)
+        return temp_drop
+
+    def inverse_temp_gain(self, heat_watts: float, seconds: int) -> float:
         """
-        total_gain = watts_loss * seconds * sunlight_factor
-        air_mass = self.air_volume_m3 * self.air_density_kg_per_m3
-        delta_temp_c = total_gain / (air_mass * self.air_specific_heat_j_per_kg_c)
-        return delta_temp_c
+        Models temperature increase from ambient heat gain.
+        :param heat_watts: Heat gained in watts
+        :param seconds: Duration in seconds
+        :return: Temperature increase in °C
+        """
+        energy_joules = heat_watts * seconds
+        mass_air = self.air_density_kg_per_m3 * self.air_volume_m3
+        temp_gain = energy_joules / (mass_air * self.specific_heat_capacity_air)
+        return temp_gain

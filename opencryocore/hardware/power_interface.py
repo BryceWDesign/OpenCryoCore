@@ -1,61 +1,58 @@
 # File: /opencryocore/hardware/power_interface.py
 
-class PowerSourceType:
-    SOLAR = "solar"
-    PISTON = "piston"
-    GRID = "grid"
-    BATTERY = "battery"
-
-
 class PowerInterface:
     """
-    Hardware-agnostic power interface for delivering energy to CryoCore systems.
-    Handles different sources (solar panel, piston generator, AC grid, battery) and simulates output.
+    Manages power input sources and distribution for CryoCore hardware.
+    Supports batteries, solar panels, and load regulation.
     """
 
-    def __init__(self, source_type: str, max_output_watts: float):
+    def __init__(self, battery_capacity_wh: float = 200.0, solar_panel_watts: float = 100.0):
         """
-        :param source_type: Source of power ("solar", "piston", "grid", "battery")
-        :param max_output_watts: Maximum wattage this source can deliver
+        :param battery_capacity_wh: Total battery capacity in watt-hours
+        :param solar_panel_watts: Peak solar panel output in watts
         """
-        self.source_type = source_type
-        self.max_output_watts = max_output_watts
-        self.active = False
+        self.battery_capacity_wh = battery_capacity_wh
+        self.solar_panel_watts = solar_panel_watts
+        self.battery_level_wh = battery_capacity_wh
+        self.load_watts = 0.0
+        self.operational = False
 
-    def activate(self):
-        self.active = True
-        print(f"[PowerInterface] {self.source_type} source activated.")
+    def power_on(self):
+        self.operational = True
+        print("[PowerInterface] Power system online.")
 
-    def shutdown(self):
-        self.active = False
-        print(f"[PowerInterface] {self.source_type} source shut down.")
+    def power_off(self):
+        self.operational = False
+        self.load_watts = 0.0
+        print("[PowerInterface] Power system offline.")
 
-    def get_current_output(self, time_of_day: float = 12.0, piston_rate: float = 1.0) -> float:
+    def consume_power(self, watts: float, duration_hours: float):
         """
-        Returns current output power in watts depending on source behavior:
-        - Solar: varies by time of day (simulate noon = max, morning/evening = less)
-        - Piston: varies by piston rate (e.g. user motion or kinetic charge)
-        - Grid: always max
-        - Battery: always max until depleted (depletion not simulated here)
-
-        :param time_of_day: Simulated time (0.0 - 24.0)
-        :param piston_rate: 0.0 - 1.0 efficiency scale
-        :return: current power output in watts
+        Consume power from battery based on load and duration.
+        :param watts: Power load in watts
+        :param duration_hours: Duration in hours
         """
-        if not self.active:
-            return 0.0
+        if not self.operational:
+            return
+        energy_consumed = watts * duration_hours
+        self.battery_level_wh = max(self.battery_level_wh - energy_consumed, 0.0)
+        print(f"[PowerInterface] Consumed {energy_consumed:.2f} Wh. Battery level: {self.battery_level_wh:.2f} Wh.")
 
-        if self.source_type == PowerSourceType.SOLAR:
-            sun_factor = max(0.0, 1.0 - abs(time_of_day - 12.0) / 6.0)
-            return self.max_output_watts * sun_factor
+    def charge_battery(self, duration_hours: float):
+        """
+        Charge battery using solar panel output.
+        :param duration_hours: Duration in hours
+        """
+        if not self.operational:
+            return
+        energy_generated = self.solar_panel_watts * duration_hours
+        self.battery_level_wh = min(self.battery_level_wh + energy_generated, self.battery_capacity_wh)
+        print(f"[PowerInterface] Charged {energy_generated:.2f} Wh. Battery level: {self.battery_level_wh:.2f} Wh.")
 
-        elif self.source_type == PowerSourceType.PISTON:
-            return self.max_output_watts * piston_rate
-
-        elif self.source_type == PowerSourceType.GRID:
-            return self.max_output_watts
-
-        elif self.source_type == PowerSourceType.BATTERY:
-            return self.max_output_watts
-
-        return 0.0
+    def get_battery_status(self) -> dict:
+        return {
+            "battery_capacity_wh": self.battery_capacity_wh,
+            "battery_level_wh": self.battery_level_wh,
+            "solar_panel_watts": self.solar_panel_watts,
+            "operational": self.operational
+        }

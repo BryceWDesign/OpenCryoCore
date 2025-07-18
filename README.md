@@ -20,11 +20,11 @@ Cities like Riyadh and Al Khobar routinely exceed 115°F (46°C), creating sever
 OpenCryoCore provides a direct, buildable answer.  
 Deploying 1,000 HyperPoles across a small Saudi municipality can achieve:
 
-- Localized cooling of 3°F per unit within a 9-foot radius (2 stories high)
-- Net temperature suppression across entire plazas, sidewalks, and open-air markets
-- Formation of rising cool-air pockets that can stimulate artificial microcloud formation
-- Immediate reduction in heat stroke risk for elderly, children, and outdoor workers
-- 24/7 cooling if sufficient solar and battery storage are maintained
+- Localized cooling of 3°F per unit within a 9-foot radius (2 stories high)  
+- Net temperature suppression across entire plazas, sidewalks, and open-air markets  
+- Formation of rising cool-air pockets that can stimulate artificial microcloud formation  
+- Immediate reduction in heat stroke risk for elderly, children, and outdoor workers  
+- 24/7 cooling if sufficient solar and battery storage are maintained  
 
 Each unit operates without compressors, freon, or industrial cooling infrastructure — powered by solar + piston-based kinetic generators. Units require minimal maintenance, can be manufactured locally, and deployed directly into existing streetlight spacing patterns.
 
@@ -40,7 +40,7 @@ This is a public good technology — and it works.
 ✔️ No Water Needed  
 ✔️ Modular, Field Serviceable  
 ✔️ Works at Street Scale  
-✔️ Creates Real, Measurable Cooling Zones
+✔️ Creates Real, Measurable Cooling Zones  
 
 Cities that could deploy immediately:
 
@@ -49,7 +49,7 @@ Cities that could deploy immediately:
 - Manila, Philippines  
 - Dubai, UAE  
 - Las Vegas, Nevada  
-- Chennai, India
+- Chennai, India  
 
 These deployments could form the basis of a modern heat management grid — not just shading the air, but actively cooling it.
 
@@ -59,13 +59,13 @@ These deployments could form the basis of a modern heat management grid — not 
 
 Each unit (CryoCore Node) is built from:
 
-- Dual thermoelectric modules (Peltier effect)
-- Vacuum-insulated metallic housing (modified thermal flask design)
-- Radial air vortex fan (360° output at 3000 RPM)
-- Raspberry Pi Zero-based controller w/ temp & voltage sensors
-- Kinetic-piston ambient energy harvesters (based on shake-flashlight design)
-- Solar panel array (100W per node)
-- 200Wh battery for night operation
+- Dual thermoelectric modules (Peltier effect)  
+- Vacuum-insulated metallic housing (modified thermal flask design)  
+- Radial air vortex fan (360° output at 3000 RPM)  
+- Raspberry Pi Zero-based controller w/ temp & voltage sensors  
+- Kinetic-piston ambient energy harvesters (based on shake-flashlight design)  
+- Solar panel array (100W per node)  
+- 200Wh battery for night operation  
 
 Nine nodes are clustered into a single HyperPole with a unified power rail and synchronized airflow. These HyperPoles can then be deployed on sidewalks, intersections, markets, playgrounds, or mosque courtyards to ensure human-safe cooling zones in all outdoor walkways.
 
@@ -80,9 +80,9 @@ As clusters of cooled air rise into hotter ambient layers, condensation nuclei m
 
 With sufficient deployment density, CryoCore systems may support:
 
-- Evening microcloud formation
-- Localized humidity stacking
-- Interference with heat domes via radiative disruption
+- Evening microcloud formation  
+- Localized humidity stacking  
+- Interference with heat domes via radiative disruption  
 
 This is not magic. It is microclimate management, engineered at street level.
 
@@ -93,11 +93,11 @@ This is not magic. It is microclimate management, engineered at street level.
 A full proof of concept document is available in `/docs/proof_of_concept.md`.  
 Key simulated metrics (single unit):
 
-- Cooling volume: 6.6 m³ (~9 ft radius sphere)
-- Time to 3°F drop: 12 minutes
-- Power draw: ~18Wh/hour average
-- Passive solar and kinetic recharge capable: 40–60Wh/day
-- Fan + TEC + Pi consumption: fully sustainable with hybrid input
+- Cooling volume: 6.6 m³ (~9 ft radius sphere)  
+- Time to 3°F drop: 12 minutes  
+- Power draw: ~18Wh/hour average  
+- Passive solar and kinetic recharge capable: 40–60Wh/day  
+- Fan + TEC + Pi consumption: fully sustainable with hybrid input  
 
 HyperPoles multiply these results geometrically across wide areas.
 
@@ -117,20 +117,26 @@ These units can be assembled in a university lab, a city garage, or a community 
 
 ## Licensing
 
-Apache License 2.0 — Free to use, free to modify, free to sell.  
-No royalties. No lock-in. This project is yours.
+This project is released under the **OpenCryoCore Public Benefit License v1.0**.  
 
-We believe in climate solutions that are deployable and defensible — now, not in 2050.
+**Summary:**  
+- Free to use, modify, and distribute  
+- Strictly non-weaponized, non-militarized, non-surveillance usage  
+- Must comply with all export laws (TAR, EAR, ITAR, etc.)  
+- Non-commercial resale only allowed for public benefit deployment  
+- Full legal license terms in `/LICENSE`
+
+This license protects both the public good and prevents misuse for any defense or restricted-purpose technology development.
 
 ---
 
 ## Get Involved
 
-- Fork the repo
-- Build a unit
-- Propose improvements
-- Submit regional test results
-- Form a field deployment cluster in your city
+- Fork the repo  
+- Build a unit  
+- Propose improvements  
+- Submit regional test results  
+- Form a field deployment cluster in your city  
 
 ---
 
@@ -142,14 +148,12 @@ This project is actively seeking:
 - Smart city funding offices  
 - Humanitarian engineering partnerships  
 - Middle Eastern municipal partners  
-- University research validation groups
+- University research validation groups  
 
 To get in touch with me:  
-📩 Reach out to me on LinkedIn : https://www.linkedin.com/in/brycewdesign/ 
-
+📩 Reach out to me on LinkedIn: [https://www.linkedin.com/in/brycewdesign/]
 ---
 
 > "We don't cool the world by theorizing.  
 > We cool the world by building."  
 > — Project Borealis
-
